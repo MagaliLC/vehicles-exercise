@@ -50,28 +50,49 @@ function checkEmpty(value: string, field: string, div: string) {
     }
 }
 
-
 function showWheelForm() {
     (<HTMLInputElement>document.getElementById("wheelForm")).classList.remove("d-none");
 }
 
 function addWheels() {
     event.preventDefault();
-    for (let i = 1; i <= 4; i++) {
-        let diameter = (<HTMLInputElement>document.getElementById("wheelDiameter" + i)).value;
-        let brand = (<HTMLInputElement>document.getElementById("wheelBrand" + i)).value;
-        if (Number(diameter) > 0.4 && Number(diameter) < 2) {
+
+    let counter: number = 0;
+    for (let i = 0; i < 4; i++) {
+        var diameter: string = (<HTMLInputElement>document.getElementById("wheelDiameter" + i)).value;
+        var brand: string = (<HTMLInputElement>document.getElementById("wheelBrand" + i)).value;
+        var input = (<HTMLInputElement>document.getElementById("wheelDiameter" + i)).value;
+        if (checkDiameter(input, "wheelDiameter" + i, "checkDiameter" + i)) {
             car.addWheel(new Wheel(Number(diameter), brand));
-            (<HTMLInputElement>document.getElementById("wheelDiameterInfo" + i)).innerHTML = diameter;
-            (<HTMLInputElement>document.getElementById("wheelDiameter" + i)).className = "form-control is-valid";
-            (<HTMLInputElement>document.getElementById("wheelBrandInfo" + i)).innerHTML = brand;
+            counter = 0;
         } else {
-            (<HTMLInputElement>document.getElementById("wheelDiameter" + i)).className = "form-control is-invalid";
-            (<HTMLInputElement>document.getElementById("checkDiameter" + i)).className = "invalid-feedback";
-            (<HTMLInputElement>document.getElementById("checkDiameter" + i)).innerHTML = "Diameter must be between 0.4 and 2";
+            counter++;
         }
     }
-    showCarInfo();
+
+    if (counter == 0) {
+        showCarInfo();
+        showWheelInfo();
+    }
+}
+
+function checkDiameter(input: string, field: string, checkField: string) {
+    if (Number(input) >= 0.4 && Number(input) <= 2) {
+        (<HTMLInputElement>document.getElementById(field)).className = "form-control is-valid";
+        return true;
+    } else {
+        (<HTMLInputElement>document.getElementById(field)).className = "form-control is-invalid";
+        (<HTMLInputElement>document.getElementById(checkField)).className = "invalid-feedback";
+        (<HTMLInputElement>document.getElementById(checkField)).innerHTML = "Diameter must be between 0.4 and 2";
+        return false;
+    }
+}
+
+function showWheelInfo() {
+    for (let i = 0; i < 4; i++) {
+        (<HTMLInputElement>document.getElementById("wheelDiameterInfo" + i)).innerHTML = car.wheels[i].diameter.toString();
+        (<HTMLInputElement>document.getElementById("wheelBrandInfo" + i)).innerHTML = car.wheels[i].brand;
+    }
 }
 
 function showCarInfo() {
@@ -79,4 +100,9 @@ function showCarInfo() {
     (<HTMLInputElement>document.getElementById("plateInfo")).innerHTML = `Plate: ${car.plate}`;
     (<HTMLInputElement>document.getElementById("brandInfo")).innerHTML = `Brand: ${car.brand}`;
     (<HTMLInputElement>document.getElementById("colorInfo")).innerHTML = `Color: ${car.color}`;
+}
+
+function wheelInfo(i: number, diameter: string, brand: string) {
+    (<HTMLInputElement>document.getElementById("wheelDiameterInfo" + i)).innerHTML = diameter;
+    (<HTMLInputElement>document.getElementById("wheelBrandInfo" + i)).innerHTML = brand;
 }

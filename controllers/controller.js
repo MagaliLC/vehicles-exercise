@@ -54,21 +54,40 @@ function showWheelForm() {
 }
 function addWheels() {
     event.preventDefault();
-    for (var i = 1; i <= 4; i++) {
+    var counter = 0;
+    for (var i = 0; i < 4; i++) {
         var diameter = document.getElementById("wheelDiameter" + i).value;
         var brand = document.getElementById("wheelBrand" + i).value;
-        if (Number(diameter) > 0.4 && Number(diameter) < 2) {
+        var input = document.getElementById("wheelDiameter" + i).value;
+        if (checkDiameter(input, "wheelDiameter" + i, "checkDiameter" + i)) {
             car.addWheel(new Wheel(Number(diameter), brand));
-            document.getElementById("wheelDiameterInfo" + i).innerHTML = diameter;
-            document.getElementById("wheelDiameter" + i).className = "form-control is-valid";
-            document.getElementById("wheelBrandInfo" + i).innerHTML = brand;
-            showCarInfo();
+            counter = 0;
         }
         else {
-            document.getElementById("wheelDiameter" + i).className = "form-control is-invalid";
-            document.getElementById("checkDiameter" + i).className = "invalid-feedback";
-            document.getElementById("checkDiameter" + i).innerHTML = "Diameter must be between 0.4 and 2";
+            counter++;
         }
+    }
+    if (counter == 0) {
+        showCarInfo();
+        showWheelInfo();
+    }
+}
+function checkDiameter(input, field, checkField) {
+    if (Number(input) >= 0.4 && Number(input) <= 2) {
+        document.getElementById(field).className = "form-control is-valid";
+        return true;
+    }
+    else {
+        document.getElementById(field).className = "form-control is-invalid";
+        document.getElementById(checkField).className = "invalid-feedback";
+        document.getElementById(checkField).innerHTML = "Diameter must be between 0.4 and 2";
+        return false;
+    }
+}
+function showWheelInfo() {
+    for (var i = 0; i < 4; i++) {
+        document.getElementById("wheelDiameterInfo" + i).innerHTML = car.wheels[i].diameter.toString();
+        document.getElementById("wheelBrandInfo" + i).innerHTML = car.wheels[i].brand;
     }
 }
 function showCarInfo() {
@@ -76,4 +95,8 @@ function showCarInfo() {
     document.getElementById("plateInfo").innerHTML = "Plate: " + car.plate;
     document.getElementById("brandInfo").innerHTML = "Brand: " + car.brand;
     document.getElementById("colorInfo").innerHTML = "Color: " + car.color;
+}
+function wheelInfo(i, diameter, brand) {
+    document.getElementById("wheelDiameterInfo" + i).innerHTML = diameter;
+    document.getElementById("wheelBrandInfo" + i).innerHTML = brand;
 }
